@@ -2,7 +2,7 @@
   "name": "three-thick-lines",
   "version": "0.0.3",
   "description": "Three.js thick lines rewritten with typescript",
-  "main": "dist/index.js",
+  "main": "dist/bundleg.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "webpack serve --open --config webpack.dev.js",
