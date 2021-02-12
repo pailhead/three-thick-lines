@@ -1,22 +1,17 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
   entry: './src/index.ts',
+  mode: 'production',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    library: 'ThickLine',
+    libraryTarget: 'umd',
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Debugger',
-    }),
-  ],
   module: {
     rules: [
       {
@@ -30,9 +25,13 @@ module.exports = {
       },
     ],
   },
-  devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9123,
+  externals: {
+    // three: 'THREE',
+    three: {
+      root: 'THREE',
+      amd: 'three',
+      commonjs: 'three',
+      commonjs2: 'three',
+    },
   },
 }

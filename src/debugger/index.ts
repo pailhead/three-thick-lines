@@ -1,12 +1,4 @@
-import {
-  CatmullRomCurve3,
-  Color,
-  PerspectiveCamera,
-  Scene,
-  Vector2,
-  Vector3,
-  WebGLRenderer,
-} from 'three'
+import { CatmullRomCurve3, Color, PerspectiveCamera, Scene, Vector2, Vector3, WebGLRenderer } from 'three'
 import { ThickLine } from '../ThickLine'
 import { ThickLineGeometry } from '../ThickLineGeometry'
 import { ThickLineMaterial } from '../ThickLineMaterial'
