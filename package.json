@@ -1,6 +1,6 @@
 {
   "name": "three-thick-lines",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Three.js thick lines rewritten with typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
