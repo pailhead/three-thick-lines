@@ -12,7 +12,7 @@
   "source": "src/index.ts",
   "files": [
     "dist",
-    "lib"
+    "src"
   ],
   "author": "Dusan Bosnjak (pailhead)",
   "license": "MIT",
