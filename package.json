@@ -9,6 +9,7 @@
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files":["dist","lib"],
   "author": "Dusan Bosnjak (pailhead)",
   "license": "MIT",
   "peerDependencies": {},
