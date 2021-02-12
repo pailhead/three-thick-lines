@@ -2,11 +2,14 @@
   "name": "three-thick-lines",
   "version": "0.0.1",
   "description": "Three.js thick lines rewritten with typescript",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "webpack serve --open",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files":["lib/**/*"],
   "author": "Dusan Bosnjak (pailhead)",
   "license": "MIT",
   "peerDependencies": {},

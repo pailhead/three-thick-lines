@@ -5,6 +5,18 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   entry: './src/index.ts',
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Debugger',
+    }),
+  ],
   module: {
     rules: [
       {
@@ -18,18 +30,6 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Debugger',
-    }),
-  ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
