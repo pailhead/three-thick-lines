@@ -113,10 +113,10 @@ export class ThickLineMaterial extends ShaderMaterial {
     if (this.uniforms && this.uniforms.uLinewidth) this.uniforms.uLinewidth.value = value
   }
 
-  get color(): number {
+  get color(): Color {
     return this.uniforms.diffuse.value
   }
-  set color(value: number) {
+  set color(value: Color) {
     this.uniforms.diffuse.value = value
   }
 
