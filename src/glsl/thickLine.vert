@@ -5,7 +5,7 @@
 #include <clipping_planes_pars_vertex>
 
 uniform float uLinewidth;
-uniform vec2 uResolution;
+uniform vec2 uResolution; // TODO: change to (aspect, 1/uResolution.y)
 
 attribute vec3 aInstanceStart;
 attribute vec3 aInstanceEnd;
@@ -33,19 +33,53 @@ void trimSegment( const in vec4 start, inout vec4 end ) {
 	end.xyz = mix( start.xyz, end.xyz, alpha );
 }
 
+vec3 transformLocalPosition( const in vec3 _position , const in float segmentIndex ) {
+	vec3 position = _position;
+	%- cLocalSpace -%
+	return position;
+}
+
+vec4 transformViewPosition( const in vec4 _position , const in float segmentIndex ) {
+	vec3 position = _position.xyz;
+	%- cViewSpace -%
+	return vec4(position , _position.w);
+}
+
+vec4 transformProjectedPosition( const in vec4 _position , const in float segmentIndex ) {
+	vec4 position = _position;
+	%- cProjectedSpace -%
+	return position;
+}
+
+%- cGlobal -%
+
 void main() {
+	
+	%- cVertexStart -%
+	
+	bool isStart = position.y < 0.5;
+
 	#ifdef USE_COLOR
-		vColor.xyz = ( position.y < 0.5 ) ? aInstanceColorStart : aInstanceColorEnd;
+		vColor.xyz = ( isStart ) ? aInstanceColorStart : aInstanceColorEnd;
 	#endif
 	#ifdef USE_DASH
-		vLineDistance = ( position.y < 0.5 ) ? dashScale * instanceDistanceStart : dashScale * instanceDistanceEnd;
+		vLineDistance = ( isStart ) ? dashScale * instanceDistanceStart : dashScale * instanceDistanceEnd;
 	#endif
 	float aspect = uResolution.x / uResolution.y;
+	
 	vUv = uv;
 	vInstanceSegmentIndex = aInstanceSegmentIndex;
+
+	vec3 instanceStart = transformLocalPosition( aInstanceStart , aInstanceSegmentIndex);
+	vec3 instanceEnd =   transformLocalPosition( aInstanceEnd   , aInstanceSegmentIndex);
+	
 	// camera space
-	vec4 start = modelViewMatrix * vec4( aInstanceStart, 1.0 );
-	vec4 end = modelViewMatrix * vec4( aInstanceEnd, 1.0 );
+	vec4 start = modelViewMatrix * vec4( instanceStart, 1.0 );
+	vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );
+	
+	start = transformViewPosition( start , aInstanceSegmentIndex);
+	end =   transformViewPosition( end   , aInstanceSegmentIndex);
+
 	// special case for perspective projection, and segments that terminate either in, or behind, the camera plane
 	// clearly the gpu firmware has a way of addressing this issue when projecting into ndc space
 	// but we need to perform ndc-space calculations in the shader, so we must address this issue directly
@@ -58,12 +92,18 @@ void main() {
 			trimSegment( end, start );
 		}
 	}
+	
 	// clip space
 	vec4 clipStart = projectionMatrix * start;
 	vec4 clipEnd = projectionMatrix * end;
+
+	clipStart = transformProjectedPosition( clipStart , aInstanceSegmentIndex);
+	clipEnd =   transformProjectedPosition( clipEnd   , aInstanceSegmentIndex);
+	
 	// ndc space
 	vec2 ndcStart = clipStart.xy / clipStart.w;
 	vec2 ndcEnd = clipEnd.xy / clipEnd.w;
+	
 	// direction
 	vec2 dir = ndcEnd - ndcStart;
 	// account for clip-space aspect ratio
@@ -87,13 +127,15 @@ void main() {
 	// adjust for clip-space to screen-space conversion // maybe uResolution should be based on viewport ...
 	offset /= uResolution.y;
 	// select end
-	vec4 clip = ( position.y < 0.5 ) ? clipStart : clipEnd;
+	vec4 clip = ( isStart ) ? clipStart : clipEnd;
 	// back to clip space
 	offset *= clip.w;
 	clip.xy += offset;
 	gl_Position = clip;
-	vec4 mvPosition = ( position.y < 0.5 ) ? start : end; // this is an approximation
+	vec4 mvPosition = ( isStart ) ? start : end; // this is an approximation
 	#include <logdepthbuf_vertex>
 	#include <clipping_planes_vertex>
 	#include <fog_vertex>
+	
+	%- cVertexEnd -%
 }

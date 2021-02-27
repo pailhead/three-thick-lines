@@ -16,7 +16,17 @@ varying float vLineDistance;
 varying vec2 vUv;
 varying float vInstanceSegmentIndex;
 
+%- cFragmentGlobal -%
+
+vec4 transformColor( inout vec4 color ){
+  %- cColor -%
+  return color;
+}
+
 void main() {
+
+  %- cFragmentStart -%
+
   #include <clipping_planes_fragment>
   #ifdef USE_DASH
     if ( vUv.y < - 1.0 || vUv.y > 1.0 ) discard; // discard endcaps
@@ -31,9 +41,12 @@ void main() {
   vec4 diffuseColor = vec4( diffuse, opacity );
   #include <logdepthbuf_fragment>
   #include <color_fragment>
-  gl_FragColor = vec4( diffuseColor.rgb, diffuseColor.a );
+  gl_FragColor = transformColor( diffuseColor );
   #include <tonemapping_fragment>
   #include <encodings_fragment>
   #include <fog_fragment>
   #include <premultiplied_alpha_fragment>
+ 
+  %- cFragmentEnd -%
+
 }
