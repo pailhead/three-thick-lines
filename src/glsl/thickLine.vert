@@ -51,7 +51,7 @@ vec4 transformProjectedPosition( const in vec4 _position , const in float segmen
 	return position;
 }
 
-%- cGlobal -%
+%- cVertexGlobal -%
 
 void main() {
 	

@@ -28,7 +28,7 @@ export class ThickLineMaterial extends ShaderMaterial {
     cLocalSpace: true,
     cViewSpace: true,
     cProjectedSpace: true,
-    cGlobal: true,
+    cVertexGlobal: true,
     cVertexStart: true,
     cVertexEnd: true,
     cColor: true,
